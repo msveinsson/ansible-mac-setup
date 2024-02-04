@@ -1,0 +1,55 @@
+---
+- name: Perform Fish Shell configuration.
+  become: "{{ (user_info.user_name != ansible_user_id) | bool }}"
+  become_user: "{{ user_info.user_name }}"
+  block:
+  - name: "Fish | Ensure fish shell is installed"
+    homebrew:
+      name: fish
+      state: present
+
+  - name: "Fish | Get fish shell path"
+    shell: which fish
+    register: shellPath
+    changed_when: false
+
+  - name: "Fish | Check if fish shell path is in /etc/shells"
+    shell: grep -Fxq "{{ shellPath.stdout }}" /etc/shells
+    register: grep_shell
+    ignore_errors: true
+    changed_when: false
+
+  - name: "Fish | Add fish shell to the list of login shells in /etc/shells"
+    lineinfile:
+      path: /etc/shells
+      line: '{{ shellPath.stdout_lines[0] }}'
+    become: true
+    become_user: root
+    when: grep_shell.rc != 0
+
+  - name: "Fish | Check if default shell is fish"
+    shell: dscl . -read /Users/{{ user_info.user_name }} UserShell
+    register: current_shell
+    changed_when: False
+
+  - name: "Fish | Set fish as the default shell for the current user"
+    shell: chsh -s {{ shellPath.stdout_lines[0] }} {{ fuser_info.user_name }}
+    args:
+      executable: /bin/bash
+    register: fish_shell
+    become: true
+    changed_when: fish_shell.rc == 0
+    when: shellPath.stdout not in current_shell.stdout
+
+  - name: "Fish | Check if Fisher plugin manager is installed"
+    command: fish -c 'type -q fisher'
+    register: fisher_check
+    ignore_errors: true
+    changed_when: false
+
+  - name: "Fish | Install Fisher plugin manager"
+    shell: |
+      curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher
+    args:
+      executable: "{{ shellPath.stdout_lines[0] }}"
+    when: fisher_check.rc != 0
