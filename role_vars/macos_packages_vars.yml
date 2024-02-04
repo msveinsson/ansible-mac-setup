@@ -1,0 +1,77 @@
+---
+homebrew_repo: https://github.com/Homebrew/brew
+
+homebrew_prefix: "/opt/homebrew"
+homebrew_install_path: "{{ homebrew_prefix }}/Homebrew"
+homebrew_brew_bin_path: "{{ homebrew_prefix }}/bin"
+homebrew_upgrade_all_packages: false
+homebrew_cask_appdir: /Applications
+homebrew_cask_accept_external_apps: false
+homebrew_clear_cache: false
+
+homebrew_taps:
+  - { tap: "homebrew/bundle", description: "Homebrew Bundle - Bundler for non-Ruby dependencies from Homebrew" }
+  - { tap: "homebrew/cask-versions", description: "Homebrew Cask Versions - Homebrew cask versions" }
+  - { tap: "homebrew/command-not-found", description: "Homebrew Command Not Found - Homebrew on Linux" }
+  - { tap: "homebrew/cask-fonts", description: "Homebrew Cask Fonts - A collection of fonts for Homebrew Cask" }
+  - { tap: "arl/arl", description: "(Gitmux)  Arl - A collection of custom formulas and casks" }
+
+homebrew_packages:
+  - { package: "ansible", description: "Ansible - Configuration management tool", url: "https://www.ansible.com" }
+  - { package: "bat", description: "A cat(1) clone with wings", url: "https://github.com/sharkdp/bat"}
+  - { package: "btop", description: "Resource monitor", url: "https://github.com/aristocratos/btop"}
+  - { package: "direnv", description: "Environment switcher for the shell", url: "https://direnv.net" }
+  - { package: "docker", description: "Docker - Container runtime", url: "https://www.docker.com" }
+  - { package: "fish", description: "Fish - User-friendly shell", url: "https://fishshell.com" }
+  - { package: "fd", description: "fd - A simple, fast and user-friendly alternative to find", url: "https://github.com/sharkdp/fd"}
+  - { package: "fzf", description: "Command line fuzzy finder", url: "https://github.com/junegunn/fzf"}
+  - { package: "gh", description: "GitHub CLI", url: "https://cli.github.com" }
+  - { package: "git", description: "Git - Distributed version control system", url: "https://git-scm.com" }
+  - { package: "git-delta", description: "A viewer for git and diff output", url: "https://github.com/dandavison/delta"}
+  - { package: "gitmux", description: "Gitmux - git status in your tmux status bar", url: "https://github.com/arl/gitmux"}
+  - { package: "gnu-sed", description: "GNU sed - Stream editor", url: "https://www.gnu.org/software/sed/"}
+  - { package: "gum", description: "A tool for glamorous shell scripts", url: "https://github.com/charmbracelet/gum"}  
+  - { package: "htop", description: "htop - Interactive process viewer", url: "https://htop.dev/"}
+  - { package: "jq", description: "jq - Command-line JSON processor", url: "https://jqlang.github.io/jq/"}
+  - { package: "lazygit", description: "Lazygit - Simple terminal UI for git commands", url: "https://github.com/jesseduffield/lazygit"}
+  - { package: "lazydocker", description: "Lazydocker - The lazier way to manage everything docker", url: "https://github.com/jesseduffield/lazydocker"}
+  - { package: "lsd", description: "LSD - The next gen ls command", url: "https://github.com/lsd-rs/lsd"}
+  - { package: "neofetch", description: "Neofetch - A command-line system information tool", url: "https://github.com/dylanaraps/neofetch"}
+  - { package: "neovim", description: "Neovim - Vim-fork focused on extensibility and usability", url: "https://neovim.io" }
+  - { package: "ripgrep", description: "ripgrep - Recursively searches directories for a regex pattern", url: "https://github.com/BurntSushi/ripgrep"}
+  - { package: "sesh", description: "Sesh, the smart terminal session manager", url: "https://github.com/joshmedeski/sesh"}
+  - { package: "shellcheck", description: "ShellCheck - A static analysis tool for shell scripts", url: "https://www.shellcheck.net" }
+  - { package: "starship", description: "Starship - The minimal, blazing-fast, and infinitely customizable prompt for any shell", url: "https://starship.rs" }
+  - { package: "tldr", description: "tldr pages - Simplified and community-driven man pages", url: "https://tldr.sh/"}
+  - { package: "tmux", description: "tmux - Terminal multiplexer", url: "https://tmux.github.io" }
+  - { package: "tree", description: "tree - List contents of directories in a tree-like format", url: "https://oldmanprogrammer.net/source.php?dir=projects/tree"}
+  - { package: "wget", description: "wget - Internet file retriever", url: "https://www.gnu.org/software/wget/"}
+  - { package: "yazi", description: "Yazi - ⚡️ Blazing Fast Terminal File Manager", url: "https://github.com/sxyazi/yazi"}
+  - { package: "yq", description: "yq - Command-line YAML processor", url: "https://github.com/mikefarah/yq"}
+  - { package: "zoxide", description: "zoxide - A smarter cd command", url: "https://github.com/ajeetdsouza/zoxide"}
+  - { package: "zsh", description: "zsh - Zsh is a shell designed for interactive use", url: "https://www.zsh.org" }
+
+homebrew_casks:
+  - { cask: "1password", description: "1Password - Password manager", url: "https://1password.com" }
+  - { cask: "1password-cli", description: "1Password CLI - Command-line interface for 1Password", url: "https://1password.com" }
+  - { cask: "alacritty", description: "Alacritty - A cross-platform, GPU-accelerated terminal emulator", url: "https://github.com/alacritty/alacritty"}
+  - { cask: "arc", description: "Arc - Web Browser", url: "https://arc.net/"}
+  - { cask: "azure-data-studio", description: "Azure Data Studio - Data management tool", url: "https://docs.microsoft.com/en-us/sql/azure-data-studio" }
+  - { cask: "brave-browser", description: "Brave - Web browser", url: "https://brave.com" }
+  - { cask: "dropbox", description: "Dropbox - File hosting service", url: "https://www.dropbox.com" }
+  - { cask: "font-cascadia-code", description: "Cascadia Code - A monospaced font", url: ""}
+  - { cask: "font-fira-code-nerd-font", description: "Fira Code Nerd Font - A monospaced font", url: ""}
+  - { cask: "font-jetbrains-mono-nerd-font", description: "JetBrains Mono Nerd Font - A monospaced font", url: ""}    
+  - { cask: "font-symbols-only-nerd-font", description: "Symbols Only Nerd Font - A monospaced font", url: ""}    
+  - { cask: "github", description: "GitHub Desktop - Git GUI", url: "https://desktop.github.com" }  
+  - { cask: "hyperkey", description: "Hyperkey - A keyboard shortcut manager", url: "https://hyperkey.app/"}
+  - { cask: "iina", description: "IINA - The modern media player for macOS", url: "https://iina.io" } 
+  - { cask: "istat-menus", description: "iStat Menus - System monitoring tool", url: "https://bjango.com/mac/istatmenus" }
+  - { cask: "keycastr", description: "KeyCastr - An open-source keystroke visualizer", url: "https://github.com/keycastr/keycastr"}
+  - { cask: "obsidian", description: "Obsidian - A powerful knowledge base", url: "https://obsidian.md" }  
+  - { cask: "powershell", description: "PowerShell - Command-line shell and scripting language", url: "https://docs.microsoft.com/en-us/powershell" }
+  - { cask: "raycast", description: "Raycast - The command center for your Mac", url: "https://raycast.com" } 
+  - { cask: "slack", description: "Slack - Business communication platform", url: "https://slack.com" }
+  - { cask: "typora", description: "Typora - A minimal markdown editor", url: "https://typora.io" }
+  - { cask: "visual-studio-code", description: "Visual Studio Code - Code editor", url: "https://code.visualstudio.com" }
+  - { cask: "wezterm", description: "WezTerm - A GPU-accelerated cross-platform terminal emulator", url: "https://wezfurlong.org/wezterm" }

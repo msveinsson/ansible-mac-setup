@@ -1,0 +1,135 @@
+---
+- name: Perform Homebrew Prerequisites.
+  become: "{{ (user_info.user_name != ansible_user_id) | bool }}"
+  become_user: "{{ user_info.user_name }}"
+  block:
+  - name: "Homebrew Prerequisites | Load Role Variables."
+    ansible.builtin.include_vars: role_vars/macos_packages_vars.yml
+
+  - name: "Homebrew Prerequisites | Ensure Homebrew parent directory has correct permissions"
+    file:
+      path: "{{ homebrew_prefix }}"
+      owner: "{{ user_info.user_name }}"
+      state: directory
+    become: true
+
+  - name: "Homebrew Prerequisites | Ensure Homebrew directory exists"
+    file:
+      path: "{{ homebrew_install_path }}"
+      owner: "{{ user_info.user_name }}"
+      group: "{{ user_info.user_group }}"
+      state: directory
+      mode: 0775
+    become: true
+
+  - name: "Homebrew Prerequisites | Ensure Homebrew is installed"
+    ansible.builtin.git:
+      repo: "{{ homebrew_repo }}"
+      version: master
+      dest: "{{ homebrew_install_path }}"
+      update: false
+      depth: 1
+    become: true
+    become_user: "{{ user_info.user_name }}"
+
+  - name: "Homebrew Prerequisites | Ensure proper permissions and ownership on homebrew_brew_bin_path dirs"
+    ansible.builtin.file:
+      path: "{{ homebrew_brew_bin_path }}"
+      state: directory
+      owner: "{{ user_info.user_name }}"
+      group: "{{ user_info.user_group }}"
+      mode: 0775
+    become: true
+
+  - name: "Homebrew Prerequisites | Ensure proper ownership on homebrew_install_path subdirs"
+    ansible.builtin.file:
+      path: "{{ homebrew_install_path }}"
+      state: directory
+      owner: "{{ user_info.user_name }}"
+      group: "{{ user_info.user_group }}"
+      recurse: true
+    become: true
+
+  - name: "Homebrew Prerequisites | Check if homebrew binary is already in place"
+    ansible.builtin.stat:
+      path: "{{ homebrew_brew_bin_path }}/brew"
+    register: homebrew_binary
+    check_mode: false
+
+  - name: "Homebrew Prerequisites | Symlink brew to homebrew_brew_bin_path"
+    ansible.builtin.file:
+      src: "{{ homebrew_install_path }}/bin/brew"
+      dest: "{{ homebrew_brew_bin_path }}/brew"
+      state: link
+    when: not homebrew_binary.stat.exists
+    become: true
+
+  - name: "Homebrew Prerequisites | Ensure proper homebrew folders are in place"
+    ansible.builtin.file:
+      path: "{{ homebrew_prefix }}/{{ item }}"
+      state: directory
+      owner: "{{ user_info.user_name }}"
+      group: "{{ user_info.user_group }}"
+    become: true
+    loop: "{{ homebrew_folders_base }}"
+
+  - name: "Homebrew Prerequisites | Collect package manager fact"
+    ansible.builtin.setup:
+      filter: ansible_pkg_mgr
+
+#  -------------------------   Homebrew Package Installation   -------------------------
+- name: Perform Homebrew Package installation.
+  become: "{{ (user_info.user_name != ansible_user_id) | bool }}"
+  become_user: "{{ user_info.user_name }}"
+  block:
+    - name: "Homebrew | Force update brew after installation"
+      ansible.builtin.command: "{{ homebrew_brew_bin_path }}/brew update --force"
+      when: not homebrew_binary.stat.exists
+
+    - name: "Homebrew | Where is the cache?"
+      ansible.builtin.command: "{{ homebrew_brew_bin_path }}/brew --cache"
+      register: homebrew_cache_path
+      changed_when: false
+      check_mode: false
+
+    - name: "Homebrew | Ensure taps are tapped"
+      ansible.builtin.homebrew_tap:
+        tap: '{{ item.tap }}'
+        url: '{{ item.url | default(omit) }}'
+        state: present
+      loop: "{{ homebrew_taps }}"
+      loop_control:
+        label: "{{ item.tap }} =>  {{ item.description }}"
+    
+    - name: "Homebrew | Ensure packages are installed"
+      ansible.builtin.homebrew:
+        path: "{{ homebrew_brew_bin_path }}"
+        name: "{{ item.package | default(item) }}"
+        install_options: "{{ item.install_options | default(omit) }}"
+        state: "{{ item.state | default('present') }}"
+      loop: "{{ homebrew_packages }}"
+      loop_control:
+        label: "{{ item.package }} =>  {{ item.description }}"
+      notify:
+        - Clear homebrew cache
+
+    - name: "Homebrew | Ensure Cask Applications are installed"
+      ansible.builtin.homebrew_cask:
+        name: "{{ item.cask | default(item) }}"
+        state: present
+        install_options: "{{ item.install_options | default('appdir=' + homebrew_cask_appdir) }}"
+        accept_external_apps: "{{ homebrew_cask_accept_external_apps }}"
+        sudo_password: "{{ ansible_become_password | default(omit) }}"
+      loop: "{{ homebrew_casks }}"
+      loop_control:
+        label: "{{ item.cask }} =>  {{ item.description }}"
+      notify:
+        - Clear homebrew cache
+
+    - name: "Homebrew | Upgrade all homebrew packages (if configured)"
+      ansible.builtin.homebrew:
+        update_homebrew: true
+        upgrade_all: true
+      when: homebrew_upgrade_all_packages
+      notify:
+        - Clear homebrew cache
