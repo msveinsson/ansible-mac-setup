@@ -1,0 +1,24 @@
+- name: Perform 1Password Agent configuration.
+  become: "{{ (user_info.user_name != ansible_user_id) | bool }}"
+  become_user: "{{ user_info.user_name }}"
+  block:
+    - name: "1Password | Load Role Variables."
+      ansible.builtin.include_vars: role_vars/1password_vars.yml
+
+    - name: "1Password | Ensure 1password ssh config directory exists"
+      ansible.builtin.file:
+        path: "{{ user_info.user_home }}/.config/1Password/ssh"
+        state: directory
+        mode: 0700
+        owner: "{{ user_info.user_name }}"
+        group: "{{ user_info.user_group }}"
+      when: one_password_agent_config_file is defined
+
+    - name: "1Password | Ensure 1password SSH Agent config file is present"
+      ansible.builtin.copy:
+        dest: "{{ user_info.user_home }}/.config/1Password/ssh/agent.toml"
+        content: "{{ one_password_agent_config_file }}"
+        mode: 0600
+        owner: "{{ user_info.user_name }}"
+        group: "{{ user_info.user_group }}"
+      when: one_password_agent_config_file is defined
