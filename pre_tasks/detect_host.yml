@@ -1,0 +1,9 @@
+---
+- name: Register Host facts
+  ansible.builtin.set_fact:
+    host_info:
+        host_name: "{{ ansible_hostname }}"
+        os_family: "{{ ansible_os_family }}"
+        os_name: "{{ ansible_distribution }}"
+        os_version: "{{ ansible_distribution_version }}"
+        os_major_version: "{{ ansible_distribution_major_version }}"

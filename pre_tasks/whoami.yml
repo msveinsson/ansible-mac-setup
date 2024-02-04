@@ -1,0 +1,10 @@
+---
+- name: Register User facts
+  ansible.builtin.set_fact:
+    user_info:
+      user_name: "{{ ansible_env['USER']}}"
+      user_id: "{{ ansible_user_id }}"
+      user_group: "{{ ansible_user_gid }}"
+      user_home: "{{ ansible_env['HOME'] }}"
+      user_shell: "{{ ansible_user_shell }}"
+  when: host_info.current_user is not defined
