@@ -1,0 +1,43 @@
+---
+- name: Set MacOs Defaults.
+  become: "{{ (user_info.user_name != ansible_user_id) | bool }}"
+  become_user: "{{ user_info.user_name }}"
+  block:
+    - name: "MacOs Defaults | Load Role Variables."
+      ansible.builtin.include_vars: role_vars/macos_defaults_vars.yml
+
+    - name: "MacOs Defaults | Ensure General defaults are set."
+      community.general.osx_defaults:
+        domain: "{{ item.domain }}"
+        key: "{{ item.key }}"
+        type: "{{ item.type }}"
+        value: "{{ item.value }}"
+        state: "{{ item.state | default('present') }}"
+      loop: "{{ macos_defaults_general }}"
+      loop_control:
+        label: "{{ item.description }} => {{ item.key }} set to {{ item.value }}"
+      when: macos_defaults_general is defined
+
+    - name: "MacOs Defaults | Ensure Finder defaults are set."
+      community.general.osx_defaults:
+        domain: "{{ item.domain }}"
+        key: "{{ item.key }}"
+        type: "{{ item.type }}"
+        value: "{{ item.value }}"
+        state: "{{ item.state | default('present') }}"
+      loop: "{{ macos_defaults_finder }}"
+      loop_control:
+        label: "{{ item.description }} => {{ item.key }} set to {{ item.value }}"
+      when: macos_defaults_finder is defined
+
+    - name: "MacOs Defaults | Ensure Dock defaults are set."
+      community.general.osx_defaults:
+        domain: "{{ item.domain }}"
+        key: "{{ item.key }}"
+        type: "{{ item.type }}"
+        value: "{{ item.value }}"
+        state: "{{ item.state | default('present') }}"
+      loop: "{{ macos_defaults_dock }}"
+      loop_control:
+        label: "{{ item.description }} => {{ item.key }} set to {{ item.value }}"
+      when: macos_defaults_dock is defined

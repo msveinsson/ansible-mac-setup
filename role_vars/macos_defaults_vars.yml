@@ -1,0 +1,46 @@
+---
+# macOS defaults
+
+macos_defaults_general:
+  - { key: "ApplePressAndHoldEnabled", domain: "NSGlobalDomain", type: "bool", value: "false", description: "Disable press-and-hold for keys in favor of key repeat" }
+  - { key: "AppleShowAllExtensions", domain: "NSGlobalDomain", type: "bool", value: "true", description: "Show all filename extensions" }
+  - { key: "KeyRepeat", domain: "NSGlobalDomain", type: "int", value: "2", description: "Set a blazingly fast keyboard repeat rate" }
+  - { key: "InitialKeyRepeat", domain: "NSGlobalDomain", type: "int", value: "12", description: "Set a shorter delay until key repeat" }
+  - { key: "location", domain: "com.apple.screencapture", type: "string", value: "~/Documents/Screenshots", description: "Save screenshots to ~/Documents/Screenshots" }
+  - { key: "NSTableViewDefaultSizeMode", domain: "NSGlobalDomain", type: "int", value: "1", description: "Set sidebar icon size to small" }
+  - { key: "NSNavPanelExpandedStateForSaveMode", domain: "NSGlobalDomain", type: "bool", value: "true", description: "Expand save panel by default" }
+  - { key: "NSNavPanelExpandedStateForSaveMode2", domain: "NSGlobalDomain", type: "bool", value: "true", description: "Expand save panel by default" }
+  - { key: "NSDocumentSaveNewDocumentsToCloud", domain: "NSGlobalDomain", type: "bool", value: "false", description: "Save to disk (not to iCloud) by default" }
+  - { key: "PMPrintingExpandedStateForPrint", domain: "NSGlobalDomain", type: "bool", value: "true", description: "Expand print panel by default" }
+  - { key: "PMPrintingExpandedStateForPrint2", domain: "NSGlobalDomain", type: "bool", value: "false", description: "Expand print panel by default" }
+  - { key: "type", domain: "com.apple.screencapture", type: "string", value: "png", description: "Save screenshots in PNG format" }
+
+macos_defaults_finder:
+  - { key: "AppleShowAllFiles", domain: "com.apple.finder", type: "bool", value: "true", description: "Show hidden files by default" }
+  - { key: "_FXShowPosixPathInTitle", domain: "com.apple.finder", type: "bool", value: "true", description: "Display full POSIX path as Finder window title" }
+  - { key: "_FXSortFoldersFirst", domain: "com.apple.finder", type: "bool", value: "true", description: "Keep folders on top when sorting by name" }
+  - { key: "FXDefaultSearchScope", domain: "com.apple.finder", type: "string", value: "SCcf", description: "When performing a search, search the current folder by default" }
+  - { key: "FXEnableExtensionChangeWarning", domain: "com.apple.finder", type: "bool", value: "false", description: "Disable the warning when changing a file extension" }
+  - { key: "FXPreferredViewStyle", domain: "com.apple.finder", type: "string", value: "Nlsv", description: "Use list view in all Finder windows by default" }
+  - { key: "NewWindowTarget", domain: "com.apple.finder", type: "string", value: "PfLo", description: "Set Path as the default location when opening a new window" }
+  - { key: "NewWindowTargetPath", domain: "com.apple.finder", type: "string", value: "file://${HOME}/", description: "Set the default location when opening a new window to the home folder" }
+  - { key: "OpenWindowForNewRemovableDisk", domain: "com.apple.finder", type: "bool", value: "true", description: "Automatically open a new Finder window when a volume is mounted" }
+  - { key: "ShowStatusBar", domain: "com.apple.finder", type: "bool", value: "true", description: "Show status bar" }
+  - { key: "ShowPathbar", domain: "com.apple.finder", type: "bool", value: "true", description: "Show path bar" }
+  - { key: "QLEnableTextSelection", domain: "com.apple.finder", type: "bool", value: "true", description: "Allow text selection in Quick Look" }
+
+macos_defaults_dock:
+  - { key: "autohide", domain: "com.apple.dock", type: "bool", value: "true", description: "Automatically hide and show the Dock" }
+  - { key: "autohide-time-modifier", domain: "com.apple.dock", type: "float", value: "0.5", description: "Set the animation speed when hiding/showing the Dock" }
+  - { key: "autohide-delay", domain: "com.apple.dock", type: "float", value: "0", description: "Remove the autohide delay" }
+  - { key: "dashboard-in-overlay", domain: "com.apple.dock", type: "bool", value: "false", description: "Don’t show Dashboard as a Space" }
+  - { key: "expose-animation-duration", domain: "com.apple.dock", type: "float", value: "0.1", description: "Speed up Mission Control animations" }
+  - { key: "magnification", domain: "com.apple.dock", type: "bool", value: "false", description: "Disable magnification" }
+  - { key: "mouse-over-hilite-stack", domain: "com.apple.dock", type: "bool", value: "true", description: "Enable highlight hover effect for the grid view of a stack (Dock)" }
+  - { key: "mru-spaces", domain: "com.apple.dock", type: "bool", value: "false", description: "Do not automatically rearrange spaces based on most recent use" }
+  - { key: "orientation", domain: "com.apple.dock", type: "string", value: "bottom", description: "Set the Dock to appear on the bottom of the screen" }
+  - { key: "tilesize", domain: "com.apple.dock", type: "float", value: "36", description: "Set the icon size of Dock items to 36 pixels" }
+  - { key: "showhidden", domain: "com.apple.dock", type: "bool", value: "true", description: "Show hidden applications in the Dock" }
+  - { key: "show-recents", domain: "com.apple.dock", type: "bool", value: "false", description: "Do not show recent applications in Dock" }
+  - { key: "show-process-indicators", domain: "com.apple.dock", type: "bool", value: "true", description: "Show indicator lights for open applications in the Dock" }
+  - { key: "static-only", domain: "com.apple.dock", type: "bool", value: "true", description: "Only show running applications in the Dock" }

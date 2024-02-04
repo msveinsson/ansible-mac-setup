@@ -1,0 +1,23 @@
+---
+# handlers for ansible-role-osx
+
+- name : "MacOs Defaults: Kill dock"
+  ansible.builtin.shell:
+    cmd: killall Dock
+    executable: /bin/bash
+  become: "{{ (user_info.user_name != ansible_user_id) | bool }}"
+  become_user: "{{ user_info.user_name }}"
+
+- name : "MacOs Defaults: Kill finder"
+  ansible.builtin.shell:
+    cmd: killall Finder
+    executable: /bin/bash
+  become: "{{ (user_info.user_name != ansible_user_id) | bool }}"
+  become_user: "{{ user_info.user_name }}"
+
+- name : "MacOs Defaults: Kill safari"
+  ansible.builtin.shell:
+    cmd: killall Safari
+    executable: /bin/bash
+  become: "{{ (user_info.user_name != ansible_user_id) | bool }}"
+  become_user: "{{ user_info.user_name }}"
