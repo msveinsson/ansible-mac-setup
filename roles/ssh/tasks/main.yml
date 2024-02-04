@@ -7,7 +7,7 @@
       ansible.builtin.include_vars: role_vars/ssh_vars.yml
 
     - name: "SSH | Load Private Role Variables."
-      ansible.builtin.include_vars: ~/code/personal/private/ssh/ansible-ssh-work-vars.yml
+      ansible.builtin.include_vars: ~/code/personal/private/ansible/vars/ssh_work_vars.yml
       ignore_errors: true
 
     - name : "SSH | Ensure SSH directory is present"
@@ -51,3 +51,4 @@
       loop_control:
         loop_var: ssh_work_key_item
         label: "{{ ssh_work_key_item.key }}"
+      when: ssh_work_keys is defined
