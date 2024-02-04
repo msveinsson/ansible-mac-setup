@@ -1,0 +1,37 @@
+---
+- name: Perform Tmux configuration.
+  become: "{{ (user_info.user_name != ansible_user_id) | bool }}"
+  become_user: "{{ user_info.user_name }}"
+  block:
+  - name: "Tmux | Ensure Tmux is installed"
+    homebrew:
+      name: tmux
+      state: present
+  
+  - name: "Tmux | Get fish shell path"
+    shell: which fish
+    register: shellPath
+    changed_when: false
+
+  - name: "Tmux | Check if Tmux TPM plugin manager is installed"
+    shell: |
+      test -d ~/.config/tmux/plugins/tpm
+    args:
+      executable: "{{ shellPath.stdout_lines[0] }}"
+    #command: tmux -c 'type -q tpm'
+    register: tpm_check
+    ignore_errors: true
+    changed_when: false
+
+  - name: "Tmux | Install Tmux TPM plugin manager"
+    git:
+      repo: https://github.com/tmux-plugins/tpm
+      dest: ~/.config/tmux/plugins/tpm
+    when: tpm_check.rc != 0
+
+  - name: "Tmux | Install Tmux plugins"
+    shell: |
+      ~/.config/tmux/plugins/tpm/bin/install_plugins
+    args:
+      executable: "{{ shellPath.stdout_lines[0] }}"
+    when: tpm_check.rc != 0
