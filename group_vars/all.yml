@@ -1,0 +1,9 @@
+default_roles:
+  - packages
+  - defaults
+  - 1password
+  - fish
+  - git
+  - ssh
+  #- repos
+  - tmux
