@@ -1,0 +1,53 @@
+---
+- name: Perform SSH configuration.
+  become: "{{ (user_info.user_name != ansible_user_id) | bool }}"
+  become_user: "{{ user_info.user_name }}"
+  block:
+    - name: "SSH | Load Role Variables."
+      ansible.builtin.include_vars: role_vars/ssh_vars.yml
+
+    - name: "SSH | Load Private Role Variables."
+      ansible.builtin.include_vars: ~/code/personal/private/ssh/ansible-ssh-work-vars.yml
+      ignore_errors: true
+
+    - name : "SSH | Ensure SSH directory is present"
+      ansible.builtin.file:
+        path: "{{ user_info.user_home }}/.ssh"
+        state: directory
+        mode: 0700
+        owner: "{{ user_info.user_name }}"
+        group: "{{ user_info.user_group }}"
+
+    - name: "SSH | Ensure SSH config file is present"
+      ansible.builtin.copy:
+        dest: "{{ user_info.user_home }}/.ssh/config"
+        content: "{{ ssh_config_file }}"
+        mode: 0600
+        owner: "{{ user_info.user_name }}"
+        group: "{{ user_info.user_group }}"
+      when: ssh_config_file is defined
+
+    - name: "SSH | Ensure SSH Public keys are present"
+      ansible.builtin.copy:
+        dest: "{{ user_info.user_home }}/.ssh/{{ ssh_key_item.key }}"
+        content: "{{ ssh_key_item.value }}"
+        mode: 0600
+        owner: "{{ user_info.user_name }}"
+        group: "{{ user_info.user_group }}"
+      loop: "{{ ssh_keys }}"
+      loop_control:
+        loop_var: ssh_key_item
+        label: "{{ ssh_key_item.key }}"
+      when: ssh_keys is defined
+    
+    - name: "SSH | Ensure SSH Work Public keys are present"
+      ansible.builtin.copy:
+        dest: "{{ user_info.user_home }}/.ssh/{{ ssh_work_key_item.key }}"
+        content: "{{ ssh_work_key_item.value }}"
+        mode: 0600
+        owner: "{{ user_info.user_name }}"
+        group: "{{ user_info.user_group }}"
+      loop: "{{ ssh_work_keys }}"
+      loop_control:
+        loop_var: ssh_work_key_item
+        label: "{{ ssh_work_key_item.key }}"
