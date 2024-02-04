@@ -1,0 +1,27 @@
+---
+- name: Perform Git configuration.
+  become: "{{ (user_info.user_name != ansible_user_id) | bool }}"
+  become_user: "{{ user_info.user_name }}"
+  block:
+  - name: "Git | Load Role Variables."
+    ansible.builtin.include_vars: role_vars/git_vars.yml
+
+  - name: "Git | Ensure gitconfig file is present"
+    ansible.builtin.git_config:
+      scope: "{{ item.scope | default('global') }}"
+      name: "{{ item.name }}"
+      value: "{{ item.value }}"
+      repo: "{{ item.repo | default(omit) }}"
+    loop: "{{ git_config_settings }}"
+    loop_control:
+        label: "{{ item.name }} =>  {{ item.value }}"
+    when: git_config_settings is defined
+
+  - name: "Git | Ensure gitignore_global file is present"
+    ansible.builtin.copy:
+      dest: "{{ user_info.user_home }}/.gitignore_global"
+      content: "{{ gitignore_global_file }}"
+      mode: 0600
+      owner: "{{ user_info.user_name }}"
+      group: "{{ user_info.user_group }}"
+    when: gitignore_global_file is defined
