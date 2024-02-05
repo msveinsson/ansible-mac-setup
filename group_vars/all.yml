@@ -5,5 +5,5 @@ default_roles:
   - fish
   - git
   - ssh
-  #- repos
+  - repos
   - tmux
