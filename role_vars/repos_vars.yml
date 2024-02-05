@@ -1,5 +1,5 @@
 ---
-repos_personal_destination: "~/code/personal22"
+repos_personal_destination: "~/code/personal"
 
 repos_personal:
   - { name: "ansible-mac-setup", repo : "git@github.com:msveinsson/ansible-mac-setup", version: "main" }
