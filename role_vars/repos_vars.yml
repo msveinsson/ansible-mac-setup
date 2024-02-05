@@ -1,0 +1,8 @@
+---
+repos_personal_destination: "~/code/personal22"
+
+repos_personal:
+  - { name: "ansible-mac-setup", repo : "git@github.com:msveinsson/ansible-mac-setup", version: "main" }
+  - { name: "dotfiles", repo: "git@github.com:msveinsson/dotfiles", version: "main" }
+  - { name: "nvim", repo: "git@github.com:msveinsson/nvim", version: "main" }
+  - { name: "private", repo: "git@github.com:msveinsson/private", version: "main" }

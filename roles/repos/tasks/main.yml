@@ -1,0 +1,55 @@
+---
+- name: Perform Dotfiles Configuration.
+  become: "{{ (user_info.user_name != ansible_user_id) | bool }}"
+  become_user: "{{ user_info.user_name }}"
+  block:
+    - name: "Repos | Load Role Variables."
+      ansible.builtin.include_vars: role_vars/repos_vars.yml
+
+    - name: "Repos | Load Cununity Role Variables."
+      ansible.builtin.include_vars: ~/code/personal/private/ansible/vars/repos_comunity_vars.yml
+      ignore_errors: true
+
+    - name: "Repos | Ensure personal repos directory is present"
+      file:
+        path: "{{ repos_personal_destination }}"
+        state: directory
+        owner: "{{ user_info.user_name }}"
+        group: "{{ user_info.user_group }}"
+        mode: 0755
+      become: false
+      when: repos_personal is defined
+
+    - name: "Repo | Ensure peersonal repositories are cloned locally."
+      ansible.builtin.git:
+        repo: "{{ item.repo }}"
+        dest: "{{ repos_personal_destination }}/{{ item.name }}"
+        recursive: yes
+        update: no
+        version: "{{ item.version }}"
+      loop: "{{ repos_personal }}"
+      loop_control:
+        label: "{{ item.name }}"
+      when: repos_personal is defined
+
+    - name: "Repos | Ensure comunity repos directory is present"
+      file:
+        path: "{{ repos_comunity_destination }}"
+        state: directory
+        owner: "{{ user_info.user_name }}"
+        group: "{{ user_info.user_group }}"
+        mode: 0755
+      become: false
+      when: repos_comunity is defined
+
+    - name: "Repo | Ensure comunity repositories are cloned locally."
+      ansible.builtin.git:
+        repo: "{{ item.repo }}"
+        dest: "{{ repos_comunity_destination }}/{{ item.name }}"
+        recursive: no
+        update: yes
+        version: "{{ item.version }}"
+      loop: "{{ repos_comunity }}"
+      loop_control:
+        label: "{{ item.name }}"
+      when: repos_comunity is defined
