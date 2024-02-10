@@ -15,3 +15,4 @@
     - "User Group: {{ user_info.user_group }}"
     - "User Home: {{ user_info.user_home }}"
     - "User Shell: {{ user_info.user_shell }}"
+    
