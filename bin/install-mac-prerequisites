@@ -1,0 +1,107 @@
+#!/bin/bash
+
+# Color codes
+NC='\033[0m'
+GREEN='\033[00;32m'
+LGREEN='\033[01;32m'
+RED='\033[00;31m'
+
+# Emoji codes
+CHECK_MARK="${LGREEN}\xE2\x9C\x94${NC}"
+ARROW="${LGREEN}\xE2\x96\xB6${NC}"
+ERROR="${RED}X${NC}"
+RIGHT_ANGLE="${LGREEN}\xE2\x88\x9F${NC}"
+
+function _task() {
+  type=$1
+  msg=$2
+  if [[ $type == "run" ]]; then
+    printf "[${ARROW}] ${GREEN}$msg${NC}\n"
+  elif [[ $type == "done" ]]; then
+    printf "[${CHECK_MARK}] ${GREEN}$msg${NC}\n"
+  elif [[ $type == "sub" ]]; then
+    printf "  ${RIGHT_ANGLE} ${GREEN}${NC}$msg\n"
+  fi
+}
+
+set -e
+
+# Ask for sudo password
+_task run "Ask for sudo password..."
+sudo -v
+echo -e "\n"
+
+# Set Hostname
+if [[ $1 == "-h" ]]; then
+  read -p "Enter Hostname: " hostname
+  _task run "Hostname..."
+  sudo scutil --set ComputerName $hostname
+  sudo scutil --set HostName $hostname
+  sudo scutil --set LocalHostName $hostname
+  sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string $hostname 
+  _task sub "Hostname set to : $hostname"
+fi
+
+# Check for Xcode Command Line Tools
+if [[ ! -x "$(xcode-select -p)" ]]; then
+  _task run "Install Xcode"
+  xcode-select --install
+else
+  _task done "Xcode already installed"
+fi
+
+# Check for Homebrew
+if [[ ! -x "$(command -v brew)" ]]; then
+  _task run "Install Homebrew"
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+else
+  _task done "Homebrew already installed"
+fi
+
+# Check for 1Password
+if [[ ! "$(brew list --cask 1password)" ]]; then
+  _task run "Install 1Password"
+  brew install cask 1password
+else
+  _task done "1Password already installed"
+fi
+
+# Check for 1Password CLI
+if [[ ! -x "$(command -v op)" ]]; then
+  _task run "Install 1Password CLI"
+  brew install cask 1password-cli
+else
+  _task done "1Password CLI already installed"
+fi
+
+# Check for Ansible
+if [[ ! -x "$(command -v ansible)" ]]; then
+  _task run "Install Ansible"
+  brew install ansible
+else
+  _task done "Ansible already installed"
+fi
+
+# Check for Python3
+if [[ ! -x "$(command -v python3)" ]]; then
+  _task run "Install Python3"
+  brew install python3
+else
+  _task done "Python3 already installed"
+fi
+
+# Check for Python3 Pip
+if [[ ! -x "$(command -v pip3)" ]]; then
+  _task run "Install Python3 Pip"
+  brew install python3-pip
+else
+  _task done "Python3 Pip already installed"
+fi
+
+# Check for Python3 Watchdog
+if [[ ! "$(pip3 list | grep watchdog)" ]]; then
+  _task run "Install Python3 Watchdog"
+  pip3 install watchdog
+else
+  _task done "Python3 Watchdog already installed"
+fi

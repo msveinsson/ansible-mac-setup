@@ -1,0 +1,60 @@
+#!/bin/bash
+
+# Paths
+VAULT_SECRET="$HOME/.ansible/vault/priv.playbook.secret"
+ANS_MAC_SETUP_DIR="$HOME/code/personal/ansible-mac-setup"
+ANS_MAC_SETUP_URL="https://github.com/msveinsson/ansible-mac-setup.git"
+
+# Color codes
+NC='\033[0m'
+GREEN='\033[00;32m'
+LGREEN='\033[01;32m'
+RED='\033[00;31m'
+
+# Emoji codes
+CHECK_MARK="${LGREEN}\xE2\x9C\x94${NC}"
+ARROW="${LGREEN}\xE2\x96\xB6${NC}"
+ERROR="${RED}X${NC}"
+RIGHT_ANGLE="${LGREEN}\xE2\x88\x9F${NC}"
+
+function _task() {
+  type=$1
+  msg=$2
+  if [[ $type == "run" ]]; then
+    printf "[${ARROW}] ${GREEN}$msg${NC}\n"
+  elif [[ $type == "done" ]]; then
+    printf "[${CHECK_MARK}] ${GREEN}$msg${NC}\n"
+  elif [[ $type == "sub" ]]; then
+    printf "  ${RIGHT_ANGLE} ${GREEN}${NC}$msg\n"
+  fi
+}
+
+# Check if ansible-mac-setup directory exists
+if [[ ! -d "$ANS_MAC_SETUP_DIR" ]]; then
+  _task run "Creating directory $ANS_MAC_SETUP_DIR"
+  mkdir -p $ANS_MAC_SETUP_DIR
+fi
+
+# Clone ansible-mac-setup repository
+if [[ ! -d "$ANS_MAC_SETUP_DIR" ]]; then
+  _task run "Clone ansible-mac-setup"
+  git clone --quiet $ANS_MAC_SETUP_URL $ANS_MAC_SETUP_DIR
+fi
+
+# Update ansible galaxy roles
+pushd $ANS_MAC_SETUP_DIR > /dev/null
+_task run "Update Galaxy Roles"
+ansible-galaxy install -r requirements.yml > /dev/null
+
+# Run ansible playbook
+_task run "Running Playbook"
+if [[ -f "$VAULT_SECRET" ]]; then
+  _task sub "Using vault secret"
+  ansible-playbook --vault-password-file $VAULT_SECRET "$ANS_MAC_SETUP_DIR/main.yml" "$@"
+else
+  _task sub "No vault secret"
+  ansible-playbook "$ANS_MAC_SETUP_DIR/main.yml" "$@"
+fi
+
+# popd to original directory
+popd 2>&1 > /dev/null
