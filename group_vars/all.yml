@@ -7,4 +7,5 @@ default_roles:
   - ssh
   - repos
   - tmux
-  
+
+setFishShellAsDefault: false

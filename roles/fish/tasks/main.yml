@@ -39,7 +39,7 @@
     register: fish_shell
     become: true
     changed_when: fish_shell.rc == 0
-    when: shellPath.stdout not in current_shell.stdout
+    when: shellPath.stdout not in current_shell.stdout and setFishShellAsDefault == true 
 
   - name: "Fish | Check if Fisher plugin manager is installed"
     command: fish -c 'type -q fisher'
